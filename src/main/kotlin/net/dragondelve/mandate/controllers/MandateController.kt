@@ -22,9 +22,10 @@ import javafx.scene.control.MenuItem
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.layout.BorderPane
+import javafx.stage.Modality
+import net.dragondelve.mandate.util.StageBuilder
 
 class MandateController {
-
     @FXML
     private lateinit var createTypeColumn: TableColumn<Any, Any>
 
@@ -72,6 +73,13 @@ class MandateController {
 
     @FXML
     private fun initialize() {
-        System.out.println("Initialization Complete");
+        println("Initialization Complete")
+        this.editTypesMenuItem.setOnAction {
+            val stage = StageBuilder("permission-type.fxml", "Edit Permission Types")
+                .controller(PermissionTypeController())
+                .modality(Modality.WINDOW_MODAL)
+                .build()
+            stage.showAndWait()
+        }
     }
 }
