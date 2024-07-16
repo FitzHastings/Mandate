@@ -16,21 +16,23 @@
 package net.dragondelve.mandate.controllers
 
 import javafx.fxml.FXML
-import javafx.scene.control.Button
-import javafx.scene.control.PasswordField
-import javafx.scene.control.TextField
-import javafx.scene.control.ToolBar
+import javafx.scene.control.*
 import javafx.stage.Stage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import net.dragondelve.mandate.client.RestClient
+import net.dragondelve.mandate.conf.Conf
+import net.dragondelve.mandate.conf.Connection
 import net.dragondelve.mandate.util.Report
 import net.dragondelve.mandate.util.StageBuilder
 
 class LoginController: StageController {
-
     @FXML
     private lateinit var emailTextField: TextField
 
     @FXML
-    private lateinit var environmentChoiceBox: ToolBar
+    private lateinit var environmentChoiceBox: ChoiceBox<Connection>
 
     @FXML
     private lateinit var loginButton: Button
@@ -42,14 +44,40 @@ class LoginController: StageController {
 
     @FXML
     private fun initialize() {
-        Report.main.info("Initializing")
-        loginButton.setOnAction {
-            val stage = StageBuilder("mandate-main.fxml", "Mandate v0.1.0")
-                .controller(PermissionTypeController())
-                .build()
+        Report.main.info("Initializing Login Screen")
 
-            stage.show()
-            this.stage.close()
+        Report.main.info("Initializing Environment Selector")
+        initializeConfigChoiceBox()
+
+        Report.main.info("Initializing Actions")
+        initializeActions()
+
+        Report.main.info("Initialization Complete")
+    }
+
+    private fun initializeConfigChoiceBox() {
+        Conf.config?.let {
+            environmentChoiceBox.items.addAll(it.connections)
+            environmentChoiceBox.selectionModel.select(0)
+        }
+    }
+
+    private fun initializeActions() {
+        val myStage = this.stage
+        loginButton.setOnAction {
+            CoroutineScope(Dispatchers.Main).launch {
+                RestClient.connectionUrl = environmentChoiceBox.selectionModel.selectedItem.url
+                val result = RestClient.makeAuthRequest(emailTextField.text, passwordField.text)
+                Report.main.info("Trying to authorize:")
+                if (result) {
+                    val stage = StageBuilder("mandate-main.fxml", "Mandate v0.1.0")
+                        .controller(PermissionTypeController())
+                        .build()
+
+                    stage.show()
+                    myStage.close()
+                }
+            }
         }
     }
 

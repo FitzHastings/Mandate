@@ -44,8 +44,8 @@ limitations under the License. -->
         <TextField fx:id="emailTextField" GridPane.columnIndex="1"/>
         <Label text="Email:"/>
     </GridPane>
-    <ToolBar fx:id="environmentChoiceBox" prefHeight="40.0" prefWidth="200.0">
+    <ToolBar prefHeight="40.0" prefWidth="200.0">
         <Button fx:id="loginButton" mnemonicParsing="false" text="Log In"/>
-        <ChoiceBox prefWidth="150.0"/>
+        <ChoiceBox fx:id="environmentChoiceBox" prefWidth="150.0"/>
     </ToolBar>
 </VBox>

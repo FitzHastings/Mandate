@@ -20,6 +20,9 @@ module net.dragondelve.mandate {
     requires org.apache.logging.log4j;
     requires kotlinx.serialization.core;
     requires com.google.gson;
+    requires io.ktor.client.core;
+    requires io.ktor.http;
+    requires kotlinx.coroutines.core;
 
     opens net.dragondelve.mandate.controllers to javafx.fxml;
     opens net.dragondelve.mandate.conf to com.google.gson;

@@ -18,4 +18,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Connection(val name: String, val url: String) {
+    override fun toString(): String {
+        return name
+    }
 }
