@@ -19,14 +19,17 @@ import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.stage.Stage
-import net.dragondelve.mandate.controllers.MandateController
+import net.dragondelve.mandate.conf.ConfigurationLoader
+import net.dragondelve.mandate.controllers.LoginController
 
 class MandateApplication : Application() {
     override fun start(stage: Stage) {
-        val fxmlLoader = FXMLLoader(MandateApplication::class.java.getResource("mandate-main.fxml"))
-        fxmlLoader.setController(MandateController())
-        val scene = Scene(fxmlLoader.load(), 800.0, 500.0)
-        stage.title = "Mandate v0.1.0"
+        ConfigurationLoader().loadConfiguration("mandate.conf.json")
+        val fxmlLoader = FXMLLoader(MandateApplication::class.java.getResource("mandate-login.fxml"))
+        fxmlLoader.setController(LoginController().passStage(stage))
+        val scene = Scene(fxmlLoader.load())
+        stage.isResizable = false
+        stage.title = "Login - Mandate"
         stage.scene = scene
         stage.show()
     }

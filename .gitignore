@@ -26,3 +26,4 @@ replay_pid*
 /.kotlin/
 /build/
 /.gradle/
+/mandate.conf.json

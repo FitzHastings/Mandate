@@ -13,15 +13,10 @@
  limitations under the License.
  */
 
-module net.dragondelve.mandate {
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires kotlin.stdlib;
-    requires org.apache.logging.log4j;
-    requires kotlinx.serialization.core;
-    requires com.google.gson;
+package net.dragondelve.mandate.conf
 
-    opens net.dragondelve.mandate.controllers to javafx.fxml;
-    opens net.dragondelve.mandate.conf to com.google.gson;
-    exports net.dragondelve.mandate;
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Config(val connections: List<Connection>) {
 }

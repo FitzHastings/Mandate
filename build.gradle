@@ -5,6 +5,7 @@ plugins {
     id 'org.javamodularity.moduleplugin' version '1.8.15'
     id 'org.openjfx.javafxplugin' version '0.1.0'
     id 'org.beryx.jlink' version '3.0.1'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.20-Beta2'
 }
 
 group 'net.dragondelve'
@@ -34,8 +35,14 @@ javafx {
 }
 
 dependencies {
+    implementation('org.apache.logging.log4j:log4j-api:2.23.1')
+    implementation ('org.apache.logging.log4j:log4j-core:2.23.1')
+    implementation('io.ktor:ktor-client-core:2.3.12')
+    implementation('io.ktor:ktor-client-cio:2.3.12')
+    implementation('org.jetbrains.kotlinx:kotlinx-serialization-core:1.7.1')
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+    implementation('com.google.code.gson:gson:2.11.0')
 }
 
 test {
