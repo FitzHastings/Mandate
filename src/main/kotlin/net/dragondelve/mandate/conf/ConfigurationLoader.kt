@@ -63,7 +63,7 @@ class ConfigurationLoader {
         file.writeText(content)
     }
 
-    private fun generateSampleConfig(): Config{
+    private fun generateSampleConfig(): Config {
         val connection = Connection("Sample", "https://dragondelve.net/api")
         val connections = ArrayList<Connection>()
         connections.add(connection)

@@ -16,7 +16,10 @@
 package net.dragondelve.mandate.controllers
 
 import javafx.fxml.FXML
-import javafx.scene.control.*
+import javafx.scene.control.Button
+import javafx.scene.control.ChoiceBox
+import javafx.scene.control.PasswordField
+import javafx.scene.control.TextField
 import javafx.stage.Stage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +30,7 @@ import net.dragondelve.mandate.conf.Connection
 import net.dragondelve.mandate.util.Report
 import net.dragondelve.mandate.util.StageBuilder
 
-class LoginController: StageController {
+class LoginController : StageController {
     @FXML
     private lateinit var emailTextField: TextField
 

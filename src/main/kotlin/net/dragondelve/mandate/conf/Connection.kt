@@ -14,6 +14,7 @@
  */
 
 package net.dragondelve.mandate.conf
+
 import kotlinx.serialization.Serializable
 
 @Serializable

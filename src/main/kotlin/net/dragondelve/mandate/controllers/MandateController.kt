@@ -16,11 +16,7 @@
 package net.dragondelve.mandate.controllers
 
 import javafx.fxml.FXML
-import javafx.scene.control.Button
-import javafx.scene.control.ListView
-import javafx.scene.control.MenuItem
-import javafx.scene.control.TableColumn
-import javafx.scene.control.TableView
+import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.stage.Modality
 import net.dragondelve.mandate.util.StageBuilder

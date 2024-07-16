@@ -32,9 +32,6 @@ object RestClient {
             url("${connectionUrl}/auth/login")
         }
         Report.main.info(response)
-        if (response.status.isSuccess()) {
-            return true
-        }
-        return false
+        return response.status.isSuccess()
     }
 }

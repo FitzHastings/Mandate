@@ -18,5 +18,4 @@ package net.dragondelve.mandate.conf
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Config(val connections: List<Connection>) {
-}
+data class Config(val connections: List<Connection>)
