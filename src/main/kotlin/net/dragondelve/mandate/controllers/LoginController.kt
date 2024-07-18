@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import net.dragondelve.mandate.client.RestClient
 import net.dragondelve.mandate.conf.Conf
 import net.dragondelve.mandate.conf.Connection
+import net.dragondelve.mandate.models.LoginDto
 import net.dragondelve.mandate.util.Report
 import net.dragondelve.mandate.util.StageBuilder
 
@@ -70,7 +71,11 @@ class LoginController : StageController {
         loginButton.setOnAction {
             CoroutineScope(Dispatchers.Main).launch {
                 RestClient.connectionUrl = environmentChoiceBox.selectionModel.selectedItem.url
-                val result = RestClient.makeAuthRequest(emailTextField.text, passwordField.text)
+                val loginDto = LoginDto()
+                loginDto.email = emailTextField.text
+                loginDto.password = passwordField.text
+
+                val result = RestClient.makeAuthRequest(loginDto)
                 Report.main.info("Trying to authorize:")
                 if (result) {
                     val stage = StageBuilder("mandate-main.fxml", "Mandate v0.1.0")

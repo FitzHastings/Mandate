@@ -15,7 +15,8 @@
 
 package net.dragondelve.mandate.conf
 
-import com.google.gson.Gson
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.dragondelve.mandate.util.Report
 import java.io.File
 import java.io.FileNotFoundException
@@ -23,7 +24,7 @@ import java.io.IOException
 import java.nio.charset.Charset
 
 class ConfigurationLoader {
-    private val gson = Gson()
+    private val json = Json { ignoreUnknownKeys = true }
 
     @Throws(IOException::class)
     fun loadConfiguration(fileName: String) {
@@ -32,7 +33,7 @@ class ConfigurationLoader {
             val configFileContent = loadFile(fileName)
             Report.main.debug("Config: $configFileContent")
 
-            Conf.config = gson.fromJson(configFileContent, Config::class.java)
+            Conf.config = json.decodeFromString<Config>(configFileContent)
             Report.main.info("Successfully Loaded Configuration File: [ $fileName ]")
         } catch (exception: IOException) {
             Report.main.warn("Configuration File Missing or Corrupt, Regenerating")
@@ -53,7 +54,7 @@ class ConfigurationLoader {
 
     private fun provideSampleConfig(fileName: String) {
         val sample = generateSampleConfig()
-        val sampleJson = gson.toJson(sample)
+        val sampleJson = json.encodeToString(sample)
 
         saveFile(fileName, sampleJson)
     }

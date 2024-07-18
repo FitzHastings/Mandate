@@ -16,22 +16,47 @@
 package net.dragondelve.mandate.client
 
 import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
+import net.dragondelve.mandate.models.AuthTokenDto
+import net.dragondelve.mandate.models.LoginDto
 import net.dragondelve.mandate.util.Report
 
 object RestClient {
-    private val client = HttpClient {
-
+    private val client = HttpClient(CIO) {
+        install(ContentNegotiation) {
+            json(Json {
+                isLenient = true
+                ignoreUnknownKeys = true
+            })
+        }
     }
     private var token: String = ""
     var connectionUrl: String = ""
 
-    suspend fun makeAuthRequest(email: String, password: String): Boolean {
-        val response = client.post {
-            url("${connectionUrl}/auth/login")
+    suspend fun makeAuthRequest(credentials: LoginDto): Boolean {
+        Report.main.info("Making an Authentication Request")
+        val response = client.post("$connectionUrl/auth/login") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(credentials)
         }
-        Report.main.info(response)
-        return response.status.isSuccess()
+
+        Report.main.info(response.status.value)
+        val body: AuthTokenDto  = response.body()
+
+        val token = body.access_token
+        Report.main.info("Token Received: $token")
+        if (token != "") {
+            this.token = token
+            return true
+        }
+
+        return false
     }
 }
