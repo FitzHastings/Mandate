@@ -29,5 +29,6 @@ module net.dragondelve.mandate {
 
     opens net.dragondelve.mandate.controllers to javafx.fxml;
     opens net.dragondelve.mandate.models to kotlinx.serialization.core;
+    opens net.dragondelve.mandate.models.observable to javafx.base;
     exports net.dragondelve.mandate;
 }

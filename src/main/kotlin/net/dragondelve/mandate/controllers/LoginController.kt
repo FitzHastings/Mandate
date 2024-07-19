@@ -79,7 +79,7 @@ class LoginController : StageController {
                 Report.main.info("Trying to authorize:")
                 if (result) {
                     val stage = StageBuilder("mandate-main.fxml", "Mandate v0.1.0")
-                        .controller(PermissionTypeController())
+                        .controller(MandateController())
                         .build()
 
                     stage.show()

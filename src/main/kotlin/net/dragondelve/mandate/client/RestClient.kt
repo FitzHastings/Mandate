@@ -22,10 +22,15 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
+import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import kotlinx.serialization.json.Json
 import net.dragondelve.mandate.models.AuthTokenDto
 import net.dragondelve.mandate.models.LoginDto
+import net.dragondelve.mandate.models.PermissionTypeDto
+import net.dragondelve.mandate.models.observable.PermissionType
 import net.dragondelve.mandate.util.Report
+import net.dragondelve.mandate.util.readFileFromResources
 
 object RestClient {
     private val client = HttpClient(CIO) {
@@ -58,5 +63,15 @@ object RestClient {
         }
 
         return false
+    }
+
+    suspend fun loadTypes(): ObservableList<PermissionType> {
+        val json = Json { ignoreUnknownKeys = true }
+        val response = json.decodeFromString<Array<PermissionTypeDto>>(readFileFromResources("typeMocks.json"))
+        val observable = FXCollections.observableArrayList(
+            *(response.map { PermissionType(it) }.toTypedArray())
+        )
+
+        return observable
     }
 }
