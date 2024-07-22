@@ -19,9 +19,9 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.fxml.FXML
 import javafx.scene.control.Button
+import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
-import javafx.scene.control.cell.PropertyValueFactory
 import javafx.scene.control.cell.TextFieldTableCell
 import javafx.util.StringConverter
 import kotlinx.coroutines.CoroutineScope
@@ -53,6 +53,9 @@ class PermissionTypeController {
 
     @FXML
     private lateinit var permissionTypeTable: TableView<PermissionType>
+
+    @FXML
+    private lateinit var actionColumn: TableColumn<PermissionType, String>
 
     private var permissionTypes: ObservableList<PermissionType> = FXCollections.observableArrayList()
 
@@ -90,17 +93,38 @@ class PermissionTypeController {
         }
 
         idColumn.cellFactory = TextFieldTableCell.forTableColumn(stringConverter)
-        idColumn.cellValueFactory = PropertyValueFactory("id")
+        idColumn.setCellValueFactory { it.value.idProperty.asObject() }
 
         typeNameColumn.cellFactory = TextFieldTableCell.forTableColumn()
-        typeNameColumn.cellValueFactory = PropertyValueFactory("typeName")
+        typeNameColumn.setCellValueFactory { it.value.typeNameProperty }
 
         systemNameColumn.cellFactory = TextFieldTableCell.forTableColumn()
-        systemNameColumn.cellValueFactory = PropertyValueFactory("systemName")
+        systemNameColumn.setCellValueFactory { it.value.systemNameProperty }
 
         descriptionColumn.cellFactory = TextFieldTableCell.forTableColumn()
-        descriptionColumn.cellValueFactory = PropertyValueFactory("description")
+        descriptionColumn.setCellValueFactory { it.value.descriptionProperty }
 
+        actionColumn.setCellFactory { _: TableColumn<PermissionType, String>? ->
+            object : TableCell<PermissionType, String>() {
+                private val saveButton = Button("Save")
+
+                init {
+                    saveButton.setOnAction {
+                        if (permissionTypeTable.items.get(index) != null) {
+                            CoroutineScope(Dispatchers.Main).launch {
+                                RestClient.saveType(permissionTypeTable.items.get(index))
+                            }
+                        }
+                    }
+                }
+
+                override fun updateItem(item: String?, empty: Boolean) {
+                    super.updateItem(item, empty)
+                    if (empty) graphic = null
+                    else graphic = saveButton
+                }
+            }
+        }
         permissionTypeTable.items = permissionTypes
     }
 

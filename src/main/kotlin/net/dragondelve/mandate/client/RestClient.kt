@@ -24,6 +24,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.dragondelve.mandate.models.AuthTokenDto
 import net.dragondelve.mandate.models.LoginDto
@@ -67,11 +68,17 @@ object RestClient {
 
     suspend fun loadTypes(): ObservableList<PermissionType> {
         val json = Json { ignoreUnknownKeys = true }
-        val response = json.decodeFromString<Array<PermissionTypeDto>>(readFileFromResources("typeMocks.json"))
+        val response = json.decodeFromString<Array<PermissionTypeDto>>(readFileFromResources("permissionTypeMocks.json"))
         val observable = FXCollections.observableArrayList(
             *(response.map { PermissionType(it) }.toTypedArray())
         )
 
         return observable
+    }
+
+    suspend fun saveType(type: PermissionType) {
+        val dto = type.toDto();
+        val json = Json { ignoreUnknownKeys = true }
+        println(json.encodeToString(dto))
     }
 }
