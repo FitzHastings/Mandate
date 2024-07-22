@@ -63,7 +63,7 @@ limitations under the License. -->
                    <Accordion prefWidth="380.0">
                        <panes>
                            <TitledPane animated="false" text="Permissions">
-                               <TableView prefHeight="200.0" prefWidth="200.0">
+                               <TableView fx:id="permissionsTable" prefHeight="200.0" prefWidth="200.0">
                                    <columns>
                                        <TableColumn fx:id="permissionTypeNameColumn" prefWidth="75.0"
                                                     text="Permission Type"/>

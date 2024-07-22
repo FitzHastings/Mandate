@@ -15,22 +15,26 @@
 
 package net.dragondelve.mandate.controllers
 
+import javafx.collections.FXCollections
 import javafx.fxml.FXML
 import javafx.scene.control.*
+import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.layout.BorderPane
 import javafx.stage.Modality
 import javafx.stage.Stage
+import net.dragondelve.mandate.models.observable.Permission
+import net.dragondelve.mandate.models.observable.Role
 import net.dragondelve.mandate.util.StageBuilder
 
 class MandateController: StageController {
     @FXML
-    private lateinit var createTypeColumn: TableColumn<Any, Any>
+    private lateinit var createTypeColumn: TableColumn<Permission, Boolean>
 
     @FXML
     private lateinit var deleteRoleButton: Button
 
     @FXML
-    private lateinit var deleteTypeColumn: TableColumn<Any, Any>
+    private lateinit var deleteTypeColumn: TableColumn<Permission,Boolean>
 
     @FXML
     private lateinit var editRoleButton: Button
@@ -42,19 +46,19 @@ class MandateController: StageController {
     private lateinit var loadLocalMenuItem: MenuItem
 
     @FXML
-    private lateinit var permissionTypeNameColumn: TableColumn<Any, Any>
+    private lateinit var permissionTypeNameColumn: TableColumn<Permission, String>
 
     @FXML
-    private lateinit var readTypeColumn: TableColumn<Any, Any>
+    private lateinit var readTypeColumn: TableColumn<Permission, Boolean>
 
     @FXML
-    private lateinit var roleIdColumn: TableColumn<Any, Any>
+    private lateinit var roleIdColumn: TableColumn<Role, Long>
 
     @FXML
-    private lateinit var roleNameColumn: TableColumn<Any, Any>
+    private lateinit var roleNameColumn: TableColumn<Role, String>
 
     @FXML
-    private lateinit var roleTableView: TableView<Any>
+    private lateinit var roleTableView: TableView<Role>
 
     @FXML
     private lateinit var rootPane: BorderPane
@@ -63,22 +67,41 @@ class MandateController: StageController {
     private lateinit var saveLocalMenuItem: MenuItem
 
     @FXML
-    private lateinit var updateTypeColumn: TableColumn<Any, Any>
+    private lateinit var updateTypeColumn: TableColumn<Permission, Boolean>
 
     @FXML
-    private lateinit var usersListView: ListView<Any>
+    private lateinit var usersListView: ListView<Permission>
 
     @FXML
     private lateinit var addRoleButton: Button
+
+    @FXML
+    private lateinit var permissionsTable: TableView<Permission>
+
+    private val roles = FXCollections.observableArrayList<Role>()
+    private val selectedRole: Role? = null
 
     private lateinit var stage: Stage
 
     @FXML
     private fun initialize() {
-        println("Main Window Initialized")
+        println("Initializing Main Window")
+
+        println("Initializng Actions")
         initializeActions()
 
-        println("Initializing Main Window")
+        println("Initializing Table")
+        initializeTable()
+
+        println("Initializing Permisisons Table")
+        initializePermissionsTable()
+
+        println("Main Window Initialized")
+    }
+
+    override fun passStage(stage: Stage): StageController {
+        this.stage = stage
+        return this
     }
 
     private fun initializeActions() {
@@ -102,8 +125,26 @@ class MandateController: StageController {
         }
     }
 
-    override fun passStage(stage: Stage): StageController {
-        this.stage = stage
-        return this
+    private fun initializeTable() {
+        roleTableView.items = roles
+
+        roleIdColumn.setCellValueFactory { it.value.idProperty.asObject() }
+        roleNameColumn.setCellValueFactory { it.value.nameProperty }
+    }
+
+    private fun initializePermissionsTable() {
+        permissionTypeNameColumn.setCellValueFactory { it.value.type.typeNameProperty }
+
+        createTypeColumn.cellFactory = CheckBoxTableCell.forTableColumn(createTypeColumn)
+        createTypeColumn.setCellValueFactory { it.value.createProperty }
+
+        readTypeColumn.cellFactory = CheckBoxTableCell.forTableColumn(readTypeColumn)
+        readTypeColumn.setCellValueFactory { it.value.readProperty }
+
+        updateTypeColumn.cellFactory = CheckBoxTableCell.forTableColumn(updateTypeColumn)
+        updateTypeColumn.setCellValueFactory { it.value.updateProperty }
+
+        deleteTypeColumn.cellFactory = CheckBoxTableCell.forTableColumn(deleteTypeColumn)
+        deleteTypeColumn.setCellValueFactory { it.value.deleteProperty }
     }
 }
