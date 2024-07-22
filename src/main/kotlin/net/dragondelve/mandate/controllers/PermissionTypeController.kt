@@ -23,6 +23,7 @@ import javafx.scene.control.TableCell
 import javafx.scene.control.TableColumn
 import javafx.scene.control.TableView
 import javafx.scene.control.cell.TextFieldTableCell
+import javafx.stage.Stage
 import javafx.util.StringConverter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ import net.dragondelve.mandate.models.PermissionTypeDto
 import net.dragondelve.mandate.models.observable.PermissionType
 import net.dragondelve.mandate.util.Report
 
-class PermissionTypeController {
+class PermissionTypeController: StageController {
     @FXML
     private lateinit var addTypeButton: Button
 
@@ -60,13 +61,15 @@ class PermissionTypeController {
 
     private var permissionTypes: ObservableList<PermissionType> = FXCollections.observableArrayList()
 
+    private lateinit var stage: Stage
+
     @FXML
     private fun initialize() {
         Report.main.info("Permission Type Window Initialization")
 
-        Report.main.info("Initializing Actions")
         initializeActions()
 
+        Report.main.info("Initializing Actions")
         Report.main.info("Mapping the Table")
         initializeTable()
 
@@ -172,4 +175,8 @@ class PermissionTypeController {
         }
     }
 
+    override fun passStage(stage: Stage): StageController {
+        this.stage = stage
+        return this
+    }
 }

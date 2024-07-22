@@ -19,9 +19,10 @@ import javafx.fxml.FXML
 import javafx.scene.control.*
 import javafx.scene.layout.BorderPane
 import javafx.stage.Modality
+import javafx.stage.Stage
 import net.dragondelve.mandate.util.StageBuilder
 
-class MandateController {
+class MandateController: StageController {
     @FXML
     private lateinit var createTypeColumn: TableColumn<Any, Any>
 
@@ -68,8 +69,19 @@ class MandateController {
     private lateinit var usersListView: ListView<Any>
 
     @FXML
+    private lateinit var addRoleButton: Button
+
+    private lateinit var stage: Stage
+
+    @FXML
     private fun initialize() {
-        println("Initialization Complete")
+        println("Main Window Initialized")
+        initializeActions()
+
+        println("Initializing Main Window")
+    }
+
+    private fun initializeActions() {
         this.editTypesMenuItem.setOnAction {
             val stage = StageBuilder("permission-type.fxml", "Edit Permission Types")
                 .controller(PermissionTypeController())
@@ -77,5 +89,21 @@ class MandateController {
                 .build()
             stage.showAndWait()
         }
+
+        this.addRoleButton.setOnAction {
+            val controller = RoleFormController()
+            val stage = StageBuilder("role-form.fxml", "Create Role")
+                .controller(controller)
+                .modality(Modality.WINDOW_MODAL)
+                .build()
+
+            controller.passStage(stage);
+            stage.showAndWait()
+        }
+    }
+
+    override fun passStage(stage: Stage): StageController {
+        this.stage = stage
+        return this
     }
 }

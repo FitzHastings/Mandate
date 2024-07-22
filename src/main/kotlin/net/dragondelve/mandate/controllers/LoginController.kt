@@ -31,7 +31,7 @@ import net.dragondelve.mandate.models.LoginDto
 import net.dragondelve.mandate.util.Report
 import net.dragondelve.mandate.util.StageBuilder
 
-class LoginController : StageController {
+class LoginController: StageController {
     @FXML
     private lateinit var emailTextField: TextField
 

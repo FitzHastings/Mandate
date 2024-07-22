@@ -57,6 +57,7 @@ limitations under the License. -->
                <ToolBar nodeOrientation="RIGHT_TO_LEFT" prefWidth="475.0">
                    <Button fx:id="deleteRoleButton" mnemonicParsing="false" text="Delete"/>
                    <Button fx:id="editRoleButton" mnemonicParsing="false" text="Edit"/>
+                   <Button fx:id="addRoleButton" mnemonicParsing="false" text="Add"/>
                </ToolBar>
                <ScrollPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                    <Accordion prefWidth="380.0">
