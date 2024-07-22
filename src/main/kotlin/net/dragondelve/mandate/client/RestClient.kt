@@ -77,8 +77,13 @@ object RestClient {
     }
 
     suspend fun saveType(type: PermissionType) {
-        val dto = type.toDto();
+        val dto = type.toDto()
         val json = Json { ignoreUnknownKeys = true }
         println(json.encodeToString(dto))
+    }
+
+    suspend fun deleteType(id: Long): Boolean {
+        println(id)
+        return true
     }
 }

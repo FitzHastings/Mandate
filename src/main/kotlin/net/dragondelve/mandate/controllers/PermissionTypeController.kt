@@ -27,6 +27,7 @@ import javafx.util.StringConverter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.dragondelve.mandate.client.RestClient
 import net.dragondelve.mandate.models.PermissionTypeDto
 import net.dragondelve.mandate.models.observable.PermissionType
@@ -78,6 +79,10 @@ class PermissionTypeController {
     private fun initializeActions() {
         addTypeButton.setOnAction {
             permissionTypes.add(PermissionType(PermissionTypeDto()))
+        }
+
+        removeTypeButton.setOnAction {
+            removeTypeAction()
         }
     }
 
@@ -133,6 +138,37 @@ class PermissionTypeController {
             val result = RestClient.loadTypes()
             permissionTypes.addAll(result)
             Report.main.info("Data Loaded")
+        }
+    }
+
+    private fun removeTypeAction() {
+        val selectedIndex = permissionTypeTable.selectionModel.selectedIndex
+        removeTypeButton.isDisable = true
+
+        if (selectedIndex != -1) {
+            val selectedType = permissionTypeTable.items[selectedIndex]
+
+            CoroutineScope(Dispatchers.IO).launch {
+                // Call deleteType and store result
+                val result = RestClient.deleteType(selectedType.idProperty.get())
+
+                withContext(Dispatchers.Main) {
+                    if (result) {
+                        permissionTypeTable.items.removeAt(selectedIndex)
+
+                        val newSelectedIndex =
+                            if (selectedIndex == permissionTypeTable.items.size)
+                                selectedIndex - 1
+                            else
+                                selectedIndex
+
+                        if (newSelectedIndex != -1)
+                            permissionTypeTable.selectionModel.select(newSelectedIndex)
+                    }
+
+                    removeTypeButton.isDisable = false
+                }
+            }
         }
     }
 
