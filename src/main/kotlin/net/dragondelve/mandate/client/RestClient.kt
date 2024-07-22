@@ -28,7 +28,9 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.dragondelve.mandate.models.AuthTokenDto
 import net.dragondelve.mandate.models.LoginDto
+import net.dragondelve.mandate.models.PermissionDto
 import net.dragondelve.mandate.models.PermissionTypeDto
+import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.models.observable.PermissionType
 import net.dragondelve.mandate.util.Report
 import net.dragondelve.mandate.util.readFileFromResources
@@ -64,6 +66,23 @@ object RestClient {
         }
 
         return false
+    }
+
+    suspend fun loadStubPermissions(): ObservableList<Permission> {
+        val json = Json { ignoreUnknownKeys = true }
+        val response = json.decodeFromString<Array<PermissionTypeDto>>(readFileFromResources("permissionTypeMocks.json"))
+        val observable = FXCollections.observableArrayList<Permission>()
+        for (type in response) {
+            val permissionDto = PermissionDto()
+            permissionDto.create = false
+            permissionDto.read = false
+            permissionDto.update = false
+            permissionDto.delete = false
+            permissionDto.type = type
+            observable.add(Permission(permissionDto))
+        }
+
+        return observable
     }
 
     suspend fun loadTypes(): ObservableList<PermissionType> {

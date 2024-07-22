@@ -90,6 +90,7 @@ class PermissionTypeController: StageController {
     }
 
     private fun initializeTable() {
+        permissionTypeTable.editableProperty().set(true)
         val stringConverter = object : StringConverter<Long>() {
             override fun toString(obj: Long?): String {
                 return obj.toString()
@@ -104,12 +105,15 @@ class PermissionTypeController: StageController {
         idColumn.setCellValueFactory { it.value.idProperty.asObject() }
 
         typeNameColumn.cellFactory = TextFieldTableCell.forTableColumn()
+        typeNameColumn.editableProperty().set(true)
         typeNameColumn.setCellValueFactory { it.value.typeNameProperty }
 
         systemNameColumn.cellFactory = TextFieldTableCell.forTableColumn()
+        systemNameColumn.editableProperty().set(true)
         systemNameColumn.setCellValueFactory { it.value.systemNameProperty }
 
         descriptionColumn.cellFactory = TextFieldTableCell.forTableColumn()
+        descriptionColumn.editableProperty().set(true)
         descriptionColumn.setCellValueFactory { it.value.descriptionProperty }
 
         actionColumn.setCellFactory { _: TableColumn<PermissionType, String>? ->
