@@ -18,5 +18,8 @@ package net.dragondelve.mandate.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Wrapper<T> (val data: T) {
+class CreatePermissionTypeDto {
+    var typeName: String = ""
+    var systemName: String = ""
+    var description: String = ""
 }

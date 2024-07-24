@@ -17,6 +17,7 @@ package net.dragondelve.mandate.models.observable
 
 import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleStringProperty
+import net.dragondelve.mandate.models.CreatePermissionTypeDto
 import net.dragondelve.mandate.models.PermissionTypeDto
 
 class PermissionType(dto: PermissionTypeDto) {
@@ -28,6 +29,14 @@ class PermissionType(dto: PermissionTypeDto) {
     fun toDto(): PermissionTypeDto {
         return PermissionTypeDto().apply {
             id = idProperty.get()
+            typeName = typeNameProperty.get()
+            systemName = systemNameProperty.get()
+            description = descriptionProperty.get()
+        }
+    }
+
+    fun toCreateDto(): CreatePermissionTypeDto {
+        return CreatePermissionTypeDto().apply {
             typeName = typeNameProperty.get()
             systemName = systemNameProperty.get()
             description = descriptionProperty.get()

@@ -20,20 +20,16 @@ import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import net.dragondelve.mandate.models.AuthTokenDto
-import net.dragondelve.mandate.models.LoginDto
-import net.dragondelve.mandate.models.PermissionDto
-import net.dragondelve.mandate.models.PermissionTypeDto
+import net.dragondelve.mandate.models.*
 import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.models.observable.PermissionType
 import net.dragondelve.mandate.util.Report
-import net.dragondelve.mandate.util.readFileFromResources
 
 object RestClient {
     private val client = HttpClient(CIO) {
@@ -69,8 +65,7 @@ object RestClient {
     }
 
     suspend fun loadStubPermissions(): ObservableList<Permission> {
-        val json = Json { ignoreUnknownKeys = true }
-        val response = json.decodeFromString<Array<PermissionTypeDto>>(readFileFromResources("permissionTypeMocks.json"))
+        val response = loadTypes()
         val observable = FXCollections.observableArrayList<Permission>()
         for (type in response) {
             val permissionDto = PermissionDto()
@@ -78,7 +73,7 @@ object RestClient {
             permissionDto.read = false
             permissionDto.update = false
             permissionDto.delete = false
-            permissionDto.type = type
+            permissionDto.type = type.toDto()
             observable.add(Permission(permissionDto))
         }
 
@@ -86,23 +81,53 @@ object RestClient {
     }
 
     suspend fun loadTypes(): ObservableList<PermissionType> {
-        val json = Json { ignoreUnknownKeys = true }
-        val response = json.decodeFromString<Array<PermissionTypeDto>>(readFileFromResources("permissionTypeMocks.json"))
+        val response = client.get("$connectionUrl/permission-type/") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            header("Authorization", "Bearer $token")
+        }
+
+        Report.main.info(response.status.value)
+        val body: List<PermissionTypeDto> = response.body()
+
         val observable = FXCollections.observableArrayList(
-            *(response.map { PermissionType(it) }.toTypedArray())
+            *(body.map { PermissionType(it) }.toTypedArray())
         )
 
         return observable
     }
 
-    suspend fun saveType(type: PermissionType) {
-        val dto = type.toDto()
-        val json = Json { ignoreUnknownKeys = true }
-        println(json.encodeToString(dto))
+    suspend fun saveType(type: PermissionType): PermissionType {
+        val response: HttpResponse = if (type.idProperty.get() == -1L) {
+            val dto = type.toCreateDto()
+            client.post("$connectionUrl/permission-type/") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                header("Authorization", "Bearer $token")
+                setBody(dto)
+            }
+        } else {
+            val dto = type.toDto()
+            client.patch("$connectionUrl/permission-type/${type.idProperty.get()}") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                header("Authorization", "Bearer $token")
+                setBody(dto)
+            }
+        }
+
+        Report.main.info(response.status.value)
+        val body: PermissionTypeDto  = response.body()
+        return PermissionType(body)
     }
 
     suspend fun deleteType(id: Long): Boolean {
-        println(id)
-        return true
+        if (id == -1L) return true
+        val response = client.delete("$connectionUrl/permission-type/$id") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            header("Authorization", "Bearer $token")
+        }
+        return response.status == HttpStatusCode.OK
     }
 }

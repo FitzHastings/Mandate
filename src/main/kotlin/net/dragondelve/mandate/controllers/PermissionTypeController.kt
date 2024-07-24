@@ -124,7 +124,7 @@ class PermissionTypeController: StageController {
                     saveButton.setOnAction {
                         if (permissionTypeTable.items.get(index) != null) {
                             CoroutineScope(Dispatchers.Main).launch {
-                                RestClient.saveType(permissionTypeTable.items.get(index))
+                                permissionTypeTable.items[index] = RestClient.saveType(permissionTypeTable.items.get(index))
                             }
                         }
                     }
