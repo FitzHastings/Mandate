@@ -20,7 +20,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 class RoleDto {
     var id: Long = -1
-    var name =  "Role"
+    var name = "Role"
     var description = ""
     var permissions: List<PermissionDto> = ArrayList()
 }

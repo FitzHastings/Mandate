@@ -26,7 +26,7 @@ import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.models.observable.Role
 import net.dragondelve.mandate.util.StageBuilder
 
-class MandateController: StageController {
+class MandateController : StageController {
     @FXML
     private lateinit var createTypeColumn: TableColumn<Permission, Boolean>
 
@@ -34,7 +34,7 @@ class MandateController: StageController {
     private lateinit var deleteRoleButton: Button
 
     @FXML
-    private lateinit var deleteTypeColumn: TableColumn<Permission,Boolean>
+    private lateinit var deleteTypeColumn: TableColumn<Permission, Boolean>
 
     @FXML
     private lateinit var editRoleButton: Button
@@ -120,7 +120,7 @@ class MandateController: StageController {
                 .modality(Modality.WINDOW_MODAL)
                 .build()
 
-            controller.passStage(stage);
+            controller.passStage(stage)
             stage.showAndWait()
         }
     }

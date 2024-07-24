@@ -26,7 +26,10 @@ import io.ktor.serialization.kotlinx.json.*
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import kotlinx.serialization.json.Json
-import net.dragondelve.mandate.models.*
+import net.dragondelve.mandate.models.AuthTokenDto
+import net.dragondelve.mandate.models.LoginDto
+import net.dragondelve.mandate.models.PermissionDto
+import net.dragondelve.mandate.models.PermissionTypeDto
 import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.models.observable.PermissionType
 import net.dragondelve.mandate.util.Report
@@ -52,7 +55,7 @@ object RestClient {
         }
 
         Report.main.info(response.status.value)
-        val body: AuthTokenDto  = response.body()
+        val body: AuthTokenDto = response.body()
 
         val token = body.access_token
         Report.main.info("Token Received: $token")
@@ -117,7 +120,7 @@ object RestClient {
         }
 
         Report.main.info(response.status.value)
-        val body: PermissionTypeDto  = response.body()
+        val body: PermissionTypeDto = response.body()
         return PermissionType(body)
     }
 

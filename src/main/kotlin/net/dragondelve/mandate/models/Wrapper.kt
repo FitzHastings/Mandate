@@ -18,5 +18,4 @@ package net.dragondelve.mandate.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Wrapper<T> (val data: T) {
-}
+class Wrapper<T>(val data: T)

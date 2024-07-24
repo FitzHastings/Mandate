@@ -34,7 +34,7 @@ import net.dragondelve.mandate.models.PermissionTypeDto
 import net.dragondelve.mandate.models.observable.PermissionType
 import net.dragondelve.mandate.util.Report
 
-class PermissionTypeController: StageController {
+class PermissionTypeController : StageController {
     @FXML
     private lateinit var addTypeButton: Button
 
@@ -124,7 +124,8 @@ class PermissionTypeController: StageController {
                     saveButton.setOnAction {
                         if (permissionTypeTable.items.get(index) != null) {
                             CoroutineScope(Dispatchers.Main).launch {
-                                permissionTypeTable.items[index] = RestClient.saveType(permissionTypeTable.items.get(index))
+                                permissionTypeTable.items[index] =
+                                    RestClient.saveType(permissionTypeTable.items.get(index))
                             }
                         }
                     }

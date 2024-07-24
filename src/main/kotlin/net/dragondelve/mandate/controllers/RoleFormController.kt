@@ -30,7 +30,7 @@ import net.dragondelve.mandate.client.RestClient
 import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.util.Report
 
-class RoleFormController: StageController {
+class RoleFormController : StageController {
     @FXML
     lateinit var updateTypeColumn: TableColumn<Permission, Boolean>
 
