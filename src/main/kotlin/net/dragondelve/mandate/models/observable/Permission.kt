@@ -17,6 +17,7 @@ package net.dragondelve.mandate.models.observable
 
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleLongProperty
+import net.dragondelve.mandate.models.CreatePermissionDto
 import net.dragondelve.mandate.models.PermissionDto
 
 class Permission(permissionDto: PermissionDto) {
@@ -26,4 +27,24 @@ class Permission(permissionDto: PermissionDto) {
     val readProperty = SimpleBooleanProperty(permissionDto.read)
     val updateProperty = SimpleBooleanProperty(permissionDto.update)
     val deleteProperty = SimpleBooleanProperty(permissionDto.delete)
+
+    fun toDto(): PermissionDto {
+        return PermissionDto().apply {
+            id = idProperty.get()
+            create = createProperty.get()
+            read = readProperty.get()
+            update = updateProperty.get()
+            delete = deleteProperty.get()
+        }
+    }
+
+    fun toCreateDto(): CreatePermissionDto {
+        return CreatePermissionDto().apply {
+            create = createProperty.get()
+            read = readProperty.get()
+            update = updateProperty.get()
+            delete = deleteProperty.get()
+            type_id = type.idProperty.get()
+        }
+    }
 }

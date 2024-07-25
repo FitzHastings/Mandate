@@ -19,6 +19,7 @@ import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import net.dragondelve.mandate.models.CreateRoleDto
 import net.dragondelve.mandate.models.RoleDto
 
 class Role(roleDto: RoleDto) {
@@ -30,4 +31,23 @@ class Role(roleDto: RoleDto) {
             Permission(permissionDto)
         }
     )
+
+    fun toDto(): RoleDto {
+        val what = permissions
+        return RoleDto().apply {
+            id = idProperty.get()
+            name = nameProperty.get()
+            description = descriptionProperty.get()
+            permissions = what.map { it.toDto() }
+        }
+    }
+
+    fun toCreateDto(): CreateRoleDto {
+        val what = permissions
+        return CreateRoleDto().apply {
+            name = nameProperty.get()
+            description = descriptionProperty.get()
+            permissions = what.map { it.toCreateDto() }
+        }
+    }
 }

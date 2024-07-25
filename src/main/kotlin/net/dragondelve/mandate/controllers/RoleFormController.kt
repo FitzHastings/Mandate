@@ -28,9 +28,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.dragondelve.mandate.client.RestClient
 import net.dragondelve.mandate.models.observable.Permission
+import net.dragondelve.mandate.models.observable.Role
 import net.dragondelve.mandate.util.Report
 
-class RoleFormController : StageController {
+class RoleFormController(val role: Role) : StageController {
     @FXML
     lateinit var updateTypeColumn: TableColumn<Permission, Boolean>
 
@@ -68,15 +69,16 @@ class RoleFormController : StageController {
     @FXML
     private fun initialize() {
         Report.main.info("Role Form Window Initialization")
+        Report.main.info("Loading Data")
+        loadData()
+
+        initializeForm()
 
         Report.main.info("Initializing Actions")
         initializeActions()
 
         Report.main.info("Initializing Permissions Table")
         initializeTable()
-
-        Report.main.info("Loading Data")
-        loadData()
 
         Report.main.info("Role Form Window Initialized")
     }
@@ -86,13 +88,18 @@ class RoleFormController : StageController {
         return this
     }
 
+    private fun initializeForm() {
+        roleTitleTextField.textProperty().bindBidirectional(role.nameProperty)
+        roleDescriptionTextField.textProperty().bindBidirectional(role.descriptionProperty)
+    }
+
     private fun initializeActions() {
         cancelButton.setOnAction {
             stage.close()
         }
 
         confirmButton.setOnAction {
-            stage.close()
+            confirmAction()
         }
     }
 
@@ -120,9 +127,17 @@ class RoleFormController : StageController {
         deleteTypeColumn.setCellValueFactory { it.value.deleteProperty }
     }
 
+    private fun confirmAction() {
+        CoroutineScope(Dispatchers.Main).launch {
+            RestClient.updateRole(role)
+            stage.close()
+        }
+    }
+
     private fun loadData() {
         CoroutineScope(Dispatchers.Main).launch {
             val result = RestClient.loadStubPermissions()
+            role.permissions.addAll(result)
             permissions.addAll(result)
             Report.main.info("Data Loaded")
         }

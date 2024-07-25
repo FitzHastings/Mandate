@@ -22,6 +22,7 @@ import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.layout.BorderPane
 import javafx.stage.Modality
 import javafx.stage.Stage
+import net.dragondelve.mandate.models.RoleDto
 import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.models.observable.Role
 import net.dragondelve.mandate.util.StageBuilder
@@ -114,7 +115,7 @@ class MandateController : StageController {
         }
 
         this.addRoleButton.setOnAction {
-            val controller = RoleFormController()
+            val controller = RoleFormController(Role(RoleDto()))
             val stage = StageBuilder("role-form.fxml", "Create Role")
                 .controller(controller)
                 .modality(Modality.WINDOW_MODAL)

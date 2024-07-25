@@ -26,12 +26,10 @@ import io.ktor.serialization.kotlinx.json.*
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import kotlinx.serialization.json.Json
-import net.dragondelve.mandate.models.AuthTokenDto
-import net.dragondelve.mandate.models.LoginDto
-import net.dragondelve.mandate.models.PermissionDto
-import net.dragondelve.mandate.models.PermissionTypeDto
+import net.dragondelve.mandate.models.*
 import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.models.observable.PermissionType
+import net.dragondelve.mandate.models.observable.Role
 import net.dragondelve.mandate.util.Report
 
 object RestClient {
@@ -40,6 +38,7 @@ object RestClient {
             json(Json {
                 isLenient = true
                 ignoreUnknownKeys = true
+                encodeDefaults = true
             })
         }
     }
@@ -132,5 +131,29 @@ object RestClient {
             header("Authorization", "Bearer $token")
         }
         return response.status == HttpStatusCode.OK
+    }
+
+    suspend fun updateRole(role: Role): Role {
+        val response: HttpResponse = if (role.idProperty.get() == -1L) {
+            val dto = role.toCreateDto()
+            client.post("$connectionUrl/role/") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                header("Authorization", "Bearer $token")
+                setBody(dto)
+            }
+        } else {
+            val dto = role.toDto()
+            client.patch("$connectionUrl/role/${role.idProperty.get()}") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                header("Authorization", "Bearer $token")
+                setBody(dto)
+            }
+        }
+
+        Report.main.info(response.status.value)
+        val body: RoleDto = response.body()
+        return Role(body)
     }
 }
