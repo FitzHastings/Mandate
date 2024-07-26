@@ -22,9 +22,14 @@ import javafx.scene.control.cell.CheckBoxTableCell
 import javafx.scene.layout.BorderPane
 import javafx.stage.Modality
 import javafx.stage.Stage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import net.dragondelve.mandate.client.RestClient
 import net.dragondelve.mandate.models.RoleDto
 import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.models.observable.Role
+import net.dragondelve.mandate.util.Report
 import net.dragondelve.mandate.util.StageBuilder
 
 class MandateController : StageController {
@@ -97,6 +102,9 @@ class MandateController : StageController {
         println("Initializing Permisisons Table")
         initializePermissionsTable()
 
+        println("Loading Data")
+        loadData()
+
         println("Main Window Initialized")
     }
 
@@ -112,6 +120,7 @@ class MandateController : StageController {
                 .modality(Modality.WINDOW_MODAL)
                 .build()
             stage.showAndWait()
+            loadData()
         }
 
         this.addRoleButton.setOnAction {
@@ -123,6 +132,7 @@ class MandateController : StageController {
 
             controller.passStage(stage)
             stage.showAndWait()
+            loadData()
         }
     }
 
@@ -131,6 +141,12 @@ class MandateController : StageController {
 
         roleIdColumn.setCellValueFactory { it.value.idProperty.asObject() }
         roleNameColumn.setCellValueFactory { it.value.nameProperty }
+
+        roleTableView.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
+            if (newValue != null) {
+                permissionsTable.items = newValue.permissions
+            }
+        }
     }
 
     private fun initializePermissionsTable() {
@@ -147,5 +163,14 @@ class MandateController : StageController {
 
         deleteTypeColumn.cellFactory = CheckBoxTableCell.forTableColumn(deleteTypeColumn)
         deleteTypeColumn.setCellValueFactory { it.value.deleteProperty }
+    }
+
+    private fun loadData() {
+        CoroutineScope(Dispatchers.Main).launch {
+            val result = RestClient.loadRoles()
+            roles.clear()
+            roles.addAll(result)
+            Report.main.info("Data Loaded")
+        }
     }
 }

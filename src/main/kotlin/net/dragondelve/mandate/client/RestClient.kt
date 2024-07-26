@@ -25,6 +25,7 @@ import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.dragondelve.mandate.models.*
 import net.dragondelve.mandate.models.observable.Permission
@@ -135,7 +136,12 @@ object RestClient {
 
     suspend fun updateRole(role: Role): Role {
         val response: HttpResponse = if (role.idProperty.get() == -1L) {
+            val json = Json{                 isLenient = true
+                ignoreUnknownKeys = true
+                encodeDefaults = true
+            }
             val dto = role.toCreateDto()
+
             client.post("$connectionUrl/role/") {
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
@@ -153,7 +159,26 @@ object RestClient {
         }
 
         Report.main.info(response.status.value)
+        if (response.status.value !== 201 && response.status.value !== 200)
+            throw Exception("Server Error!")
+
         val body: RoleDto = response.body()
         return Role(body)
+    }
+
+    suspend fun loadRoles(): ObservableList<Role> {
+        val response = client.get("$connectionUrl/role/") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            header("Authorization", "Bearer $token")
+        }
+
+        Report.main.info(response.status.value)
+        val body: List<RoleDto> = response.body()
+
+        val observable = FXCollections.observableArrayList(
+            *(body.map { Role(it) }.toTypedArray())
+        )
+        return observable
     }
 }
