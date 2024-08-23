@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Copyright 2023 Prokhor Kalinin
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License. -->
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<SplitPane dividerPositions="0.15191986644407346, 0.5601001669449082" maxHeight="-Infinity" maxWidth="-Infinity"
+           minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1200.0"
+           xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+                <Label text="Roles"/>
+            </ToolBar>
+            <TableView fx:id="rolesTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn prefWidth="75.0" text="Name"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+    </AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="300.0">
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+                <Label text="Assigned Users"/>
+            </ToolBar>
+            <TableView fx:id="assignedUsersTableView" prefHeight="200.0" prefWidth="300.0" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="assignedFirstNameColumn" prefWidth="75.0" text="First Name"/>
+                    <TableColumn fx:id="assignedLastNameColumn" prefWidth="75.0" text="Last Name"/>
+                    <TableColumn fx:id="assignedEmailColumn" prefWidth="75.0" text="Email"/>
+                    <TableColumn fx:id="assignedOccupationColumn" prefWidth="75.0" text="Occupation"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+    </AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+            <ToolBar prefHeight="40.0" prefWidth="200.0">
+                <Label text="Unassigned Users"/>
+            </ToolBar>
+            <TableView fx:id="unassignedUsersTableView" prefHeight="200.0" prefWidth="300.0"
+                       VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="unassignedFirstNameColumn" prefWidth="75.0" text="First Name"/>
+                    <TableColumn fx:id="unassignedLastNameColumn" prefWidth="75.0" text="Last Name"/>
+                    <TableColumn fx:id="unassignedEmailColumn" prefWidth="75.0" text="Email"/>
+                    <TableColumn fx:id="unassignedOccupationColumn" prefWidth="75.0" text="Occupation"/>
+                </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+            </TableView>
+        </VBox>
+    </AnchorPane>
+</SplitPane>
