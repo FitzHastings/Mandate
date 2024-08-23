@@ -21,11 +21,12 @@ limitations under the License. -->
     <top>
         <MenuBar BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="File">
-                <MenuItem fx:id="loadLocalMenuItem" mnemonicParsing="false" text="Load Local"/>
-                <MenuItem fx:id="saveLocalMenuItem" mnemonicParsing="false" text="Save Local"/>
+                <MenuItem fx:id="loadLocalMenuItem" mnemonicParsing="false" text="Load Local (Not Supported)"/>
+                <MenuItem fx:id="saveLocalMenuItem" mnemonicParsing="false" text="Save Local (Not Supported)"/>
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-                <MenuItem fx:id="editTypesMenuItem" mnemonicParsing="false" text="Permission Types"/>
+            <Menu mnemonicParsing="false" text="Tools">
+                <MenuItem fx:id="editTypesMenuItem" mnemonicParsing="false" text="Edit Permission Types"/>
+                <MenuItem fx:id="assignUsersMenuItem" mnemonicParsing="false" text="Assign Users"/>
             </Menu>
         </MenuBar>
     </top>

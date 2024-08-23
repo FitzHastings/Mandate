@@ -76,7 +76,7 @@ object RestClient {
             permissionDto.read = false
             permissionDto.update = false
             permissionDto.delete = false
-            permissionDto.type = type.toDto()
+            permissionDto.permissionType = type.toDto()
             observable.add(Permission(permissionDto))
         }
 
@@ -134,12 +134,8 @@ object RestClient {
         return response.status == HttpStatusCode.OK
     }
 
-    suspend fun updateRole(role: Role): Role {
+    suspend fun updateRole(role: Role) {
         val response: HttpResponse = if (role.idProperty.get() == -1L) {
-            val json = Json{                 isLenient = true
-                ignoreUnknownKeys = true
-                encodeDefaults = true
-            }
             val dto = role.toCreateDto()
 
             client.post("$connectionUrl/role/") {
@@ -150,6 +146,7 @@ object RestClient {
             }
         } else {
             val dto = role.toDto()
+
             client.patch("$connectionUrl/role/${role.idProperty.get()}") {
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
@@ -161,13 +158,10 @@ object RestClient {
         Report.main.info(response.status.value)
         if (response.status.value !== 201 && response.status.value !== 200)
             throw Exception("Server Error!")
-
-        val body: RoleDto = response.body()
-        return Role(body)
     }
 
     suspend fun loadRoles(): ObservableList<Role> {
-        val response = client.get("$connectionUrl/role/") {
+        val response = client.get("$connectionUrl/role/users") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             header("Authorization", "Bearer $token")
@@ -180,5 +174,15 @@ object RestClient {
             *(body.map { Role(it) }.toTypedArray())
         )
         return observable
+    }
+
+    suspend fun deleteRole(id: Long): Boolean {
+        if (id == -1L) return true
+        val response = client.delete("$connectionUrl/role/$id") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            header("Authorization", "Bearer $token")
+        }
+        return response.status == HttpStatusCode.OK
     }
 }

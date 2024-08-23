@@ -18,12 +18,10 @@ package net.dragondelve.mandate.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-class PermissionDto {
+class UserDto {
     var id: Long = -1
-    var permissionType: PermissionTypeDto? = null
-    var create = false
-    var read = false
-    var update = false
-    var delete = false
-    var type_id = -1L
+    var firstName = ""
+    var lastName = ""
+    var occupation = ""
+    var email = ""
 }

@@ -23,4 +23,5 @@ class RoleDto {
     var name = "Role"
     var description = ""
     var permissions: List<PermissionDto> = ArrayList()
+    var users: List<UserDto> = ArrayList()
 }

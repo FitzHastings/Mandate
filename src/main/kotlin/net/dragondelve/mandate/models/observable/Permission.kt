@@ -22,7 +22,7 @@ import net.dragondelve.mandate.models.PermissionDto
 
 class Permission(permissionDto: PermissionDto) {
     val idProperty = SimpleLongProperty(permissionDto.id)
-    val type: PermissionType = PermissionType(permissionDto.type)
+    val type: PermissionType = permissionDto.permissionType?.let { PermissionType(it) }!!
     val createProperty = SimpleBooleanProperty(permissionDto.create)
     val readProperty = SimpleBooleanProperty(permissionDto.read)
     val updateProperty = SimpleBooleanProperty(permissionDto.update)
@@ -35,6 +35,7 @@ class Permission(permissionDto: PermissionDto) {
             read = readProperty.get()
             update = updateProperty.get()
             delete = deleteProperty.get()
+            type_id = type.idProperty.get()
         }
     }
 

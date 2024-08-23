@@ -91,6 +91,7 @@ class RoleFormController(val role: Role) : StageController {
     private fun initializeForm() {
         roleTitleTextField.textProperty().bindBidirectional(role.nameProperty)
         roleDescriptionTextField.textProperty().bindBidirectional(role.descriptionProperty)
+        permissions.addAll(role.permissions)
     }
 
     private fun initializeActions() {
@@ -137,8 +138,12 @@ class RoleFormController(val role: Role) : StageController {
     private fun loadData() {
         CoroutineScope(Dispatchers.Main).launch {
             val result = RestClient.loadStubPermissions()
-            role.permissions.addAll(result)
-            permissions.addAll(result)
+            for (permission in result) {
+                if (!role.permissions.any { it.type.idProperty.get() == permission.type.idProperty.get() }) {
+                    role.permissions.add(permission)
+                    permissions.add(permission)
+                }
+            }
             Report.main.info("Data Loaded")
         }
     }

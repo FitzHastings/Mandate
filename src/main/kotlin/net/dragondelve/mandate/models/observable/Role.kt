@@ -26,6 +26,11 @@ class Role(roleDto: RoleDto) {
     val idProperty = SimpleLongProperty(roleDto.id)
     val nameProperty = SimpleStringProperty(roleDto.name)
     val descriptionProperty = SimpleStringProperty(roleDto.description)
+    val users: ObservableList<User> = FXCollections.observableArrayList(
+        roleDto.users.map { userDto ->
+            User(userDto)
+        }
+    )
     val permissions: ObservableList<Permission> = FXCollections.observableArrayList(
         roleDto.permissions.map { permissionDto ->
             Permission(permissionDto)
@@ -49,5 +54,9 @@ class Role(roleDto: RoleDto) {
             description = descriptionProperty.get()
             permissions = what.map { it.toCreateDto() }
         }
+    }
+
+    override fun toString(): String {
+        return nameProperty.get() ?: ""
     }
 }

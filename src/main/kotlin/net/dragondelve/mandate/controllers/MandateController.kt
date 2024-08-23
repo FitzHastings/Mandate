@@ -25,10 +25,12 @@ import javafx.stage.Stage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.dragondelve.mandate.client.RestClient
 import net.dragondelve.mandate.models.RoleDto
 import net.dragondelve.mandate.models.observable.Permission
 import net.dragondelve.mandate.models.observable.Role
+import net.dragondelve.mandate.models.observable.User
 import net.dragondelve.mandate.util.Report
 import net.dragondelve.mandate.util.StageBuilder
 
@@ -47,6 +49,9 @@ class MandateController : StageController {
 
     @FXML
     private lateinit var editTypesMenuItem: MenuItem
+
+    @FXML
+    private lateinit  var assignUsersMenuItem: MenuItem
 
     @FXML
     private lateinit var loadLocalMenuItem: MenuItem
@@ -76,7 +81,7 @@ class MandateController : StageController {
     private lateinit var updateTypeColumn: TableColumn<Permission, Boolean>
 
     @FXML
-    private lateinit var usersListView: ListView<Permission>
+    private lateinit var usersListView: ListView<User>
 
     @FXML
     private lateinit var addRoleButton: Button
@@ -85,7 +90,6 @@ class MandateController : StageController {
     private lateinit var permissionsTable: TableView<Permission>
 
     private val roles = FXCollections.observableArrayList<Role>()
-    private val selectedRole: Role? = null
 
     private lateinit var stage: Stage
 
@@ -123,6 +127,15 @@ class MandateController : StageController {
             loadData()
         }
 
+        this.assignUsersMenuItem.setOnAction {
+            val stage = StageBuilder("assign-users.fxml", "Assign Users")
+                .controller(AssignUsersController())
+                .modality((Modality.WINDOW_MODAL))
+                .build()
+            stage.showAndWait()
+            loadData()
+        }
+
         this.addRoleButton.setOnAction {
             val controller = RoleFormController(Role(RoleDto()))
             val stage = StageBuilder("role-form.fxml", "Create Role")
@@ -134,6 +147,21 @@ class MandateController : StageController {
             stage.showAndWait()
             loadData()
         }
+
+        this.editRoleButton.setOnAction {
+            val selectedRole = roleTableView.selectionModel.selectedItem ?: return@setOnAction
+            val controller = RoleFormController(selectedRole)
+            val stage = StageBuilder("role-form.fxml", "Edit Role: ${selectedRole.nameProperty}" )
+                .controller(controller)
+                .modality(Modality.WINDOW_MODAL)
+                .build()
+
+            controller.passStage(stage)
+            stage.showAndWait()
+            loadData()
+        }
+
+        deleteRoleButton.setOnAction { removeRoleAction() }
     }
 
     private fun initializeTable() {
@@ -145,6 +173,9 @@ class MandateController : StageController {
         roleTableView.selectionModel.selectedItemProperty().addListener { _, _, newValue ->
             if (newValue != null) {
                 permissionsTable.items = newValue.permissions
+                usersListView.items = newValue.users
+            } else {
+                permissionsTable.items = FXCollections.observableArrayList()
             }
         }
     }
@@ -170,7 +201,39 @@ class MandateController : StageController {
             val result = RestClient.loadRoles()
             roles.clear()
             roles.addAll(result)
+            roleTableView.selectionModel.selectFirst()
             Report.main.info("Data Loaded")
+        }
+    }
+
+    private fun removeRoleAction() {
+        val selectedIndex = roleTableView.selectionModel.selectedIndex
+        deleteRoleButton.isDisable = true
+
+        if (selectedIndex != -1) {
+            val selectedType = roleTableView.items[selectedIndex]
+
+            CoroutineScope(Dispatchers.IO).launch {
+                // Call deleteType and store result
+                val result = RestClient.deleteRole(selectedType.idProperty.get())
+
+                withContext(Dispatchers.Main) {
+                    if (result) {
+                        roleTableView.items.removeAt(selectedIndex)
+
+                        val newSelectedIndex =
+                            if (selectedIndex == roleTableView.items.size)
+                                selectedIndex - 1
+                            else
+                                selectedIndex
+
+                        if (newSelectedIndex != -1)
+                            roleTableView.selectionModel.select(newSelectedIndex)
+                    }
+
+                    deleteRoleButton.isDisable = false
+                }
+            }
         }
     }
 }
